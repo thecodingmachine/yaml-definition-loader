@@ -1,0 +1,2 @@
+services:
+    new_factory3: { class: FooBarClass, factory: BazClass::getInstance}

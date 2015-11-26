@@ -1,0 +1,4 @@
+services:
+    request:
+        class: Request
+        lazy: true

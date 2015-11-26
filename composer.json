@@ -1,0 +1,37 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:container-interop/definition-interop.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:mnapoli/assembly.git"
+        }
+    ],
+    "name": "thecodingmachine/yaml-definition-loader",
+    "type": "library",
+    "description": "Provides a loader that can convert YAML files to container definitions compatible with the definition-interop standard.",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "TheCodingMachine\\Definition\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TheCodingMachine\\Definition\\": "tests/"
+        }
+    },
+    "require": {
+        "container-interop/definition-interop": "dev-master",
+        "symfony/yaml": "~2.0 | ~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.5",
+        "mnapoli/assembly": "dev-master",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

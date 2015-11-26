@@ -1,0 +1,2 @@
+services:
+    not_shared: { class: FooClass, shared: false }

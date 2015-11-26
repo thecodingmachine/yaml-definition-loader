@@ -1,0 +1,4 @@
+services:
+    another_alias_for_foo:
+        alias: foo
+        public: false

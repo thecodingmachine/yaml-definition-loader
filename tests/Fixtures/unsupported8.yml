@@ -1,0 +1,3 @@
+services:
+    decorator_service:
+        decorates: decorated
