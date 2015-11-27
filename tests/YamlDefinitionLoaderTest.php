@@ -140,12 +140,18 @@ class YamlDefinitionLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('setBar', $services['method_call2']->getMethodCalls()[0]->getMethodName(), '->load() parses the method_call tag');
         $this->assertEquals(array('foo', new Reference('foo'), array(true, false)), $services['method_call2']->getMethodCalls()[0]->getArguments(), '->load() parses the method_call tag');
 
-        //$this->assertEquals('factory', $services['new_factory1']->getFactory(), '->load() parses the factory tag');
-        $this->assertEquals(new Reference('foo'), $services['new_factory2']->getReference(), '->load() parses the factory tag');
+        $this->assertEquals('factory', $services['new_factory1']->getFactory(), '->load() parses the factory tag');
+        $this->assertEquals(new Reference('foo'), $services['new_factory2']->getFactory(), '->load() parses the factory tag');
         $this->assertEquals('method', $services['new_factory2']->getMethodName(), '->load() parses the factory tag');
-        $this->assertEquals(new Reference('baz'), $services['new_factory3']->getReference(), '->load() parses the factory tag');
-        //$this->assertEquals('Class', $services['new_factory3']->getReference(), '->load() parses the factory tag');
-        //$this->assertEquals('getClass', $services['new_factory3']->getMethodName(), '->load() parses the factory tag');
+        $this->assertEquals(new Reference('baz'), $services['new_factory3']->getFactory(), '->load() parses the factory tag');
+        $this->assertEquals('baz', $services['new_factory3']->getFactory()->getTarget(), '->load() parses the factory tag');
+        $this->assertEquals('getClass', $services['new_factory3']->getMethodName(), '->load() parses the factory tag');
+        $this->assertEquals('baz', $services['new_factory4']->getFactory()->getTarget(), '->load() parses the factory tag');
+        $this->assertEquals('getClass', $services['new_factory4']->getMethodName(), '->load() parses the factory tag');
+        $this->assertEquals(['foo'], $services['new_factory4']->getArguments(), '->load() parses the factory tag');
+
+        $this->assertEquals('Class', $services['new_factory5']->getFactory(), '->load() parses the factory tag');
+        $this->assertEquals('getClass', $services['new_factory5']->getMethodName(), '->load() parses the factory tag');
 
         $this->assertEquals('foo', $services['alias_for_foo']->getTarget(), '->load() parses aliases');
         $this->assertEquals('foo', $services['another_alias_for_foo']->getTarget(), '->load() parses aliases');

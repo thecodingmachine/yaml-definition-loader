@@ -14,10 +14,10 @@ services:
     alias_for_foo: '@foo'
     another_alias_for_foo:
         alias: foo
-#    new_factory1: { factory: factory::method }
+    new_factory1: { factory: factory::method }
     new_factory2: { factory: foo:method }
     new_factory3: { factory: ['@baz', getClass]}
-#    new_factory3: { factory: [Class, getClass]}
     new_factory4:
       factory: ['@baz', getClass]
       arguments: ['foo']
+    new_factory5: { factory: [Class, getClass]}
