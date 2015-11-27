@@ -42,8 +42,155 @@ $definitions = $servicesProvider->getDefinitions();
 
 Note: the `YamlDefinitionLoader` implements the `Interop\Container\Definition\DefinitionProviderInterface`.
 
+## File format
+
+### Declare parameters
+
+```yaml
+parameters:
+    foo: bar
+```
+
+### Declare an instance
+
+```yaml
+services:
+    my_service:
+        class: My\ClassName
+        arguments: [ foo, bar ]
+```
+
+This will declare a "my_service" service, from class `My\ClassName`, passing to the constructor the strings "foo" and "bar".
+
+### Reference an instance
+
+```yaml
+services:
+    my_reference:
+        class: My\ReferencedClass
+    my_service:
+        class: My\ClassName
+        arguments: [ "@my_reference" ]
+```
+
+The `my_reference` service will be passed in parameter to the constructor of the `my_service` service.
+To reference a service, use the `@` prefix. If you want a string starting with a `@`, you should double it. For instance:
+
+- `@service`
+- `@@some text starting with @`
+
+### Call a method of a service
+
+```yaml
+services:
+    my_service:
+        class: My\ClassName
+        calls:
+            - [ setLogger, [ '@logger' ] ]
+```
+
+You can call methods of a service after generating it. For instance, you could call setters.
+You need to create a `calls` attribute and pass it a list of methods to be called. The first item is the method name
+and the second item is a list of parameters to pass to that method.
+
+### Set a public property of a service
+
+```yaml
+services:
+    my_service:
+        class: My\ClassName
+        properties:
+            foo: bar
+            bar: "@baz"
+```
+
+Use the `properties` key to set a public property in a service.
+
+### Aliases
+
+```yaml
+services:
+    my_service:
+        class: My\ClassName
+    my_alias:
+        alias: my_service
+```
+
+You can build services alias using the `alias` attribute.
+
+Alternatively, you can also use this syntax:
+
+```yaml
+services:
+    my_alias: "@my_service"
+```
+
+### Factories
+
+You can use factory methods of other services or classes to build your services.
+
+**Static factories**
+
+```yaml
+services:
+    my_service:
+        factory: My\ClassName::myMethod
+```
+
+The `my_service` instance will be returned from a call to `My\ClassName::myMethod`. You can even pass parameters to this
+method using the `arguments` attribute:
+
+```yaml
+services:
+    my_service:
+        factory: My\ClassName::myMethod
+        attributes: [ '@logger', 42 ] 
+```
+
+You can also use this alternative syntax:
+
+```yaml
+services:
+    my_service:
+        factory: [ 'My\ClassName', 'myMethod' ]
+```
+
+**Service based factories**
+
+```yaml
+services:
+    factory:
+        class: My\Factory
+    my_service:
+        factory: factory:myMethod
+```
+
+The `my_service` instance will be returned from a call to `myMethod` on the service named `factory`. Notice how we used
+a single ':' instead of a double '::'.
+
+You can also use this alternative syntax:
+
+```yaml
+services:
+    factory:
+        class: My\Factory
+    my_service:
+        factory: 'My\ClassName@myMethod'
+```
+
 
 ## Noticeable differences with Symfony YAML services format
 
 - The keys are case sensitive
 - Parameters do not accept references (no "@service" reference in the "parameters" section). They can only be scalars.
+- These features are not supported:
+    - tags
+    - public/private services
+    - shared services
+    - synthetic services
+    - lazy services
+    - abstract services
+    - file based services
+    - deprecated services
+    - decorated services
+    - autowired services
