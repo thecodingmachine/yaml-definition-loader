@@ -1,8 +1,7 @@
 <?php
-namespace TheCodingMachine\Definition\Exception;
 
+namespace TheCodingMachine\Definition\Exception;
 
 class RuntimeException extends \RuntimeException implements YamlDefinitionLoaderException
 {
-
 }

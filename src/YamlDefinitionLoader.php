@@ -1,12 +1,11 @@
 <?php
+
 namespace TheCodingMachine\Definition;
 
 use Assembly\AliasDefinition;
 use Assembly\FactoryDefinition;
 use Assembly\InstanceDefinition;
-use Assembly\MethodCall;
 use Assembly\ParameterDefinition;
-use Assembly\PropertyAssignment;
 use Assembly\Reference;
 use Interop\Container\Definition\DefinitionInterface;
 use Interop\Container\Definition\DefinitionProviderInterface;
@@ -14,7 +13,6 @@ use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
 use TheCodingMachine\Definition\Exception\FileNotFoundException;
 use TheCodingMachine\Definition\Exception\InvalidArgumentException;
-use TheCodingMachine\Definition\Exception\RuntimeException;
 
 class YamlDefinitionLoader implements DefinitionProviderInterface
 {
@@ -69,8 +67,9 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
     /**
      * Parses all imports.
      *
-     * @param array  $content
+     * @param array $content
      * @param $content
+     *
      * @return DefinitionInterface[]
      */
     private function parseImports($content)
@@ -105,13 +104,15 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
 
             $additionalDefinitions = $newDefinitions + $additionalDefinitions;
         }
+
         return $additionalDefinitions;
     }
 
     /**
      * Parses definitions.
      *
-     * @param array  $content
+     * @param array $content
+     *
      * @return DefinitionInterface[]
      */
     private function parseDefinitions($content)
@@ -137,9 +138,10 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
      * Parses a definition.
      *
      * @param string $id
-     * @param array $service
+     * @param array  $service
      *
      * @return DefinitionInterface
+     *
      * @throws InvalidArgumentException When tags are invalid
      */
     private function parseDefinition($id, $service)
@@ -156,6 +158,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
             if (isset($service['public'])) {
                 throw new InvalidArgumentException('The "public" key is not supported by YamlDefinitionLoader. This is a Symfony specific feature.');
             }
+
             return new AliasDefinition($id, $service['alias']);
         }
 
@@ -200,7 +203,6 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
                     call_user_func_array([$definition, 'addMethodCall'], $args);
                 }
             }
-
         }
 
         if (isset($service['factory'])) {
@@ -252,11 +254,9 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
             throw new InvalidArgumentException('The "file" key in instance definitions is not supported by YamlDefinitionLoader. This is a Symfony specific feature.');
         }
 
-
         if (isset($service['configurator'])) {
             throw new InvalidArgumentException('The "configurator" key in instance definitions is not supported by YamlDefinitionLoader. This is a Symfony specific feature.');
         }
-
 
         if (isset($service['tags'])) {
             throw new InvalidArgumentException('The "tags" key in instance definitions is not supported by YamlDefinitionLoader. This is a Symfony specific feature.');
@@ -367,8 +367,10 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
             } else {
                 $value = substr($value, 1);
                 if ('=' === substr($value, -1)) {
-                    throw new InvalidArgumentException('Non-strict services (ending with "=") are not supported by YamlDefinitionLoader. This is a Symfony specific feature.');            } else {
+                    throw new InvalidArgumentException('Non-strict services (ending with "=") are not supported by YamlDefinitionLoader. This is a Symfony specific feature.');
+                } else {
                 }
+
                 return new Reference($value);
             }
         } else {

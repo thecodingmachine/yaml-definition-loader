@@ -1,12 +1,11 @@
 <?php
+
 namespace TheCodingMachine\Definition;
 
-
-use Assembly\AliasDefinition;
 use Assembly\Reference;
 use TheCodingMachine\Definition\Exception\FileNotFoundException;
 
-class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
+class YamlDefinitionLoaderTest extends \PHPUnit_Framework_TestCase
 {
     protected static $fixturesPath;
 
@@ -17,7 +16,6 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadFile()
     {
-
         try {
             $loader = new YamlDefinitionLoader(self::$fixturesPath.'/foo.yml');
             $loader->getDefinitions();
@@ -52,7 +50,6 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $definitions = $loader->getDefinitions();
         $this->assertEquals([], $definitions);
     }
-
 
     /**
      * @dataProvider provideInvalidFiles
@@ -134,7 +131,6 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadServices()
     {
-
         $loader = new YamlDefinitionLoader(self::$fixturesPath.'/services6.yml');
         $services = $loader->getDefinitions();
         $this->assertTrue(isset($services['foo']), '->load() parses service elements');
@@ -158,7 +154,6 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $services['instance_with_properties']->getPropertyAssignments()[0]->getValue(), '->load() parses the properties tag');
         $this->assertEquals('bar', $services['instance_with_properties']->getPropertyAssignments()[1]->getPropertyName(), '->load() parses the properties tag');
         $this->assertEquals('baz', $services['instance_with_properties']->getPropertyAssignments()[1]->getValue()->getTarget(), '->load() parses the properties tag');
-
     }
 
     public function testLoadYamlOnlyWithKeys()
@@ -172,5 +167,4 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         //$this->assertEquals(array(true), $definition->getArguments());
         //$this->assertEquals(array('manager' => array(array('alias' => 'user'))), $definition->getTags());
     }
-
 }
