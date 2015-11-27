@@ -1,0 +1,4 @@
+services:
+    foo:
+      class: FooClass
+      arguments: ['@?foo']

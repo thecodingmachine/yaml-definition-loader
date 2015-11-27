@@ -1,13 +1,23 @@
 services:
     foo: { class: FooClass }
     baz: { class: BazClass }
-    arguments: { class: FooClass, arguments: [foo, '@foo', [true, false]] }
+    arguments: { class: FooClass, arguments: [foo, '@foo', [true, false], '@@foo'] }
     method_call2:
         class: FooClass
         calls:
             - [ setBar, [ foo, '@foo', [true, false] ] ]
+    instance_with_properties:
+        class: FooClass
+        properties:
+            foo: bar
+            bar: "@baz"
     alias_for_foo: '@foo'
     another_alias_for_foo:
         alias: foo
-    new_factory1: { class: FooBarClass, factory: factory}
-    new_factory2: { class: FooBarClass, factory: ['@baz', getClass]}
+#    new_factory1: { factory: factory::method }
+    new_factory2: { factory: foo:method }
+    new_factory3: { factory: ['@baz', getClass]}
+#    new_factory3: { factory: [Class, getClass]}
+    new_factory4:
+      factory: ['@baz', getClass]
+      arguments: ['foo']

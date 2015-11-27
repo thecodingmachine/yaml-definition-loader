@@ -37,10 +37,6 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
      */
     public function getDefinitions()
     {
-        if (!is_readable($this->fileName)) {
-            throw new FileNotFoundException("Could not find YAML definition file '{$this->fileName}'");
-        }
-
         $content = $this->loadFile($this->fileName);
 
         // empty file
@@ -182,7 +178,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
             if (isset($service['properties'])) {
                 $properties = $this->resolveServices($service['properties']);
                 foreach ($properties as $name => $property) {
-                    $definition->addPropertyAssignment(new PropertyAssignment($name, $property));
+                    $definition->addPropertyAssignment($name, $property);
                 }
             }
 
@@ -200,7 +196,8 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
                         $args = isset($call[1]) ? $this->resolveServices($call[1]) : array();
                     }
 
-                    $definition->addMethodCall(new MethodCall($method, $args));
+                    array_unshift($args, $method);
+                    call_user_func_array([$definition, 'addMethodCall'], $args);
                 }
             }
 
@@ -211,11 +208,19 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
                 if (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') === false) {
                     $parts = explode(':', $service['factory']);
                     $definition = new FactoryDefinition($id, $this->resolveServices('@'.$parts[0]), $parts[1]);
+                } elseif (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') !== false) {
+                    $parts = explode('::', $service['factory']);
+                    $definition = new FactoryDefinition($id, $parts[0], $parts[1]);
                 } else {
-                    throw new InvalidArgumentException('Factory service declared in YamlDefinitionLoader must extend from a service (using the syntax "service_name:method_name". Call from a static class using the syntax "class_name::method_name" is not supported.');
+                    throw new InvalidArgumentException('A "factory" must be in the format "service_name:method_name" or "class_name::method_name".Got "'.$service['factory'].'"');
                 }
             } else {
-                $definition = new FactoryDefinition($id, $this->resolveServices('@'.$service['factory'][0]), $service['factory'][1]);
+                $definition = new FactoryDefinition($id, $this->resolveServices($service['factory'][0]), $service['factory'][1]);
+            }
+
+            if (isset($service['arguments'])) {
+                $arguments = $this->resolveServices($service['arguments']);
+                call_user_func_array([$definition, 'setArguments'], $arguments);
             }
         }
 
@@ -287,16 +292,12 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
      */
     protected function loadFile($file)
     {
-        if (!class_exists('Symfony\Component\Yaml\Parser')) {
-            throw new RuntimeException('Unable to load YAML config files as the Symfony Yaml Component is not installed.');
-        }
-
         if (!stream_is_local($file)) {
             throw new InvalidArgumentException(sprintf('This is not a local file "%s".', $file));
         }
 
-        if (!file_exists($file)) {
-            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid.', $file));
+        if (!is_readable($file)) {
+            throw new FileNotFoundException(sprintf('The file "%s" does not exist or is not readable.', $file));
         }
 
         $yamlParser = new Parser();

@@ -1,0 +1,5 @@
+services:
+    another_alias_for_foo:
+        class: Foo
+        tags:
+          - false
