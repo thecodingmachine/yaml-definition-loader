@@ -2,11 +2,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:container-interop/definition-interop.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:mnapoli/assembly.git"
+            "url": "git@github.com:thecodingmachine/definition-discovery.git"
         }
     ],
     "name": "thecodingmachine/yaml-definition-loader",
@@ -25,6 +21,7 @@
     },
     "require": {
         "container-interop/definition-interop": "dev-master",
+        "container-interop/definition-discovery": "dev-master",
         "symfony/yaml": "~2.0 | ~3.0"
     },
     "require-dev": {

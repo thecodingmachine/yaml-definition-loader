@@ -1,0 +1,8 @@
+{
+    "version": "1.0",
+    "binding-types": {
+        "definition-interop/yaml-definition-files": {
+            "description": "A list of YAML files providing container entries definitions."
+        }
+    }
+}

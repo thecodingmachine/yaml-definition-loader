@@ -3,8 +3,8 @@
 namespace TheCodingMachine\Definition;
 
 use Assembly\AliasDefinition;
-use Assembly\FactoryDefinition;
-use Assembly\InstanceDefinition;
+use Assembly\FactoryCallDefinition;
+use Assembly\ObjectDefinition;
 use Assembly\ParameterDefinition;
 use Assembly\Reference;
 use Interop\Container\Definition\DefinitionInterface;
@@ -169,7 +169,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
         $definition = null;
 
         if (isset($service['class'])) {
-            $definition = new InstanceDefinition($id, $service['class']);
+            $definition = new ObjectDefinition($id, $service['class']);
 
             if (isset($service['arguments'])) {
                 $arguments = $this->resolveServices($service['arguments']);
@@ -209,15 +209,15 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
             if (is_string($service['factory'])) {
                 if (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') === false) {
                     $parts = explode(':', $service['factory']);
-                    $definition = new FactoryDefinition($id, $this->resolveServices('@'.$parts[0]), $parts[1]);
+                    $definition = new FactoryCallDefinition($id, $this->resolveServices('@'.$parts[0]), $parts[1]);
                 } elseif (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') !== false) {
                     $parts = explode('::', $service['factory']);
-                    $definition = new FactoryDefinition($id, $parts[0], $parts[1]);
+                    $definition = new FactoryCallDefinition($id, $parts[0], $parts[1]);
                 } else {
                     throw new InvalidArgumentException('A "factory" must be in the format "service_name:method_name" or "class_name::method_name".Got "'.$service['factory'].'"');
                 }
             } else {
-                $definition = new FactoryDefinition($id, $this->resolveServices($service['factory'][0]), $service['factory'][1]);
+                $definition = new FactoryCallDefinition($id, $this->resolveServices($service['factory'][0]), $service['factory'][1]);
             }
 
             if (isset($service['arguments'])) {
