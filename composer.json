@@ -20,8 +20,8 @@
         }
     },
     "require": {
-        "container-interop/definition-interop": "dev-master",
-        "container-interop/definition-discovery": "dev-master",
+        "container-interop/definition-interop": "~0.1.0",
+        "container-interop/definition-discovery": "~0.1.0",
         "symfony/yaml": "~2.0 | ~3.0"
     },
     "require-dev": {

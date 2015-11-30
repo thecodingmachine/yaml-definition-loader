@@ -1,0 +1,2 @@
+services:
+    nothing: { foo: bar }

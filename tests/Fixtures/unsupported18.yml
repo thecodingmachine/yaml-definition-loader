@@ -1,0 +1,2 @@
+services:
+    new_factory1: { factory: factory_method }

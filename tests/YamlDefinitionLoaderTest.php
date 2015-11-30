@@ -100,6 +100,7 @@ class YamlDefinitionLoaderTest extends \PHPUnit_Framework_TestCase
             array('unsupported15'),
             array('unsupported16'),
             array('unsupported17'),
+            array('unsupported18'),
         );
     }
 
