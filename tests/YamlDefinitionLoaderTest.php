@@ -101,6 +101,7 @@ class YamlDefinitionLoaderTest extends \PHPUnit_Framework_TestCase
             array('unsupported16'),
             array('unsupported17'),
             array('unsupported18'),
+            array('unsupported19'),
         );
     }
 
@@ -111,9 +112,9 @@ class YamlDefinitionLoaderTest extends \PHPUnit_Framework_TestCase
 
         $expectedResults = array('foo' => 'bar', 'MixedCase' => array('MixedCaseKey' => 'value'), 'values' => array(true, false, 0, 1000.3), 'bar' => 'foo', 'foo_bar' => '@foo_bar');
 
-        foreach ($definitions as $definition) {
+        foreach ($definitions as $id => $definition) {
             $this->assertInstanceOf('Interop\\Container\\Definition\\ParameterDefinitionInterface', $definition);
-            $this->assertEquals($expectedResults[$definition->getIdentifier()], $definition->getValue());
+            $this->assertEquals($expectedResults[$id], $definition->getValue());
         }
     }
 
@@ -124,9 +125,9 @@ class YamlDefinitionLoaderTest extends \PHPUnit_Framework_TestCase
 
         $expectedResults = array('foo' => 'foo', 'values' => array(true, false), 'bar' => 'foo', 'MixedCase' => array('MixedCaseKey' => 'value'), 'foo_bar' => '@foo_bar');
 
-        foreach ($definitions as $definition) {
+        foreach ($definitions as $id => $definition) {
             $this->assertInstanceOf('Interop\\Container\\Definition\\ParameterDefinitionInterface', $definition);
-            $this->assertEquals($expectedResults[$definition->getIdentifier()], $definition->getValue());
+            $this->assertEquals($expectedResults[$id], $definition->getValue());
         }
     }
 

@@ -3,6 +3,7 @@
 namespace TheCodingMachine\Definition;
 
 
+use Assembly\ArrayDefinitionProvider;
 use Interop\Container\Definition\DefinitionProviderInterface;
 use Interop\Container\Definition\Factory\DefinitionProviderFactoryInterface;
 use Puli\Discovery\Api\Discovery;
@@ -22,7 +23,27 @@ class YamlDefinitionLoaderFactory implements DefinitionProviderFactoryInterface
      */
     public static function buildDefinitionProvider(Discovery $discovery)
     {
- // TODO: change method signature to   DefinitionProviderInterface[]
-        // Then foreach discovered yaml file, go!
+        $bindings = $discovery->findBindings('thecodingmachine/yaml_definitions');
+
+        $definitionProviders = [];
+
+        foreach ($bindings as $binding) {
+            foreach ($binding->getResources() as $resource) {
+                $definitionProviders[] = new YamlDefinitionLoader($resource->getPath());
+            }
+        }
+
+        return self::mergeDefinitionProviders($definitionProviders);
+    }
+
+    /**
+     * @param DefinitionProviderInterface[] $definitionProviders
+     */
+    private static function mergeDefinitionProviders(array $definitionProviders) {
+        $definitions = [];
+        foreach ($definitionProviders as $definitionProvider) {
+            $definitions += $definitionProvider->getDefinitions();
+        }
+        return new ArrayDefinitionProvider($definitions);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace TheCodingMachine\Definition;
 
-use Assembly\AliasDefinition;
 use Assembly\FactoryCallDefinition;
 use Assembly\ObjectDefinition;
 use Assembly\ParameterDefinition;
@@ -52,7 +51,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
             }
 
             foreach ($content['parameters'] as $key => $value) {
-                $definitions[$key] = new ParameterDefinition($key, $value);
+                $definitions[$key] = new ParameterDefinition($value);
                 //$this->container->setParameter($key, $this->resolveServices($value));
             }
         }
@@ -147,7 +146,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
     private function parseDefinition($id, $service)
     {
         if (is_string($service) && 0 === strpos($service, '@')) {
-            return new AliasDefinition($id, substr($service, 1));
+            return new Reference(substr($service, 1));
         }
 
         if (!is_array($service)) {
@@ -159,7 +158,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
                 throw new InvalidArgumentException('The "public" key is not supported by YamlDefinitionLoader. This is a Symfony specific feature.');
             }
 
-            return new AliasDefinition($id, $service['alias']);
+            return new Reference($service['alias']);
         }
 
         if (isset($service['parent'])) {
@@ -169,7 +168,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
         $definition = null;
 
         if (isset($service['class'])) {
-            $definition = new ObjectDefinition($id, $service['class']);
+            $definition = new ObjectDefinition($service['class']);
 
             if (isset($service['arguments'])) {
                 $arguments = $this->resolveServices($service['arguments']);
@@ -209,15 +208,15 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
             if (is_string($service['factory'])) {
                 if (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') === false) {
                     $parts = explode(':', $service['factory']);
-                    $definition = new FactoryCallDefinition($id, $this->resolveServices('@'.$parts[0]), $parts[1]);
+                    $definition = new FactoryCallDefinition($this->resolveServices('@'.$parts[0]), $parts[1]);
                 } elseif (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') !== false) {
                     $parts = explode('::', $service['factory']);
-                    $definition = new FactoryCallDefinition($id, $parts[0], $parts[1]);
+                    $definition = new FactoryCallDefinition($parts[0], $parts[1]);
                 } else {
                     throw new InvalidArgumentException('A "factory" must be in the format "service_name:method_name" or "class_name::method_name".Got "'.$service['factory'].'"');
                 }
             } else {
-                $definition = new FactoryCallDefinition($id, $this->resolveServices($service['factory'][0]), $service['factory'][1]);
+                $definition = new FactoryCallDefinition($this->resolveServices($service['factory'][0]), $service['factory'][1]);
             }
 
             if (isset($service['arguments'])) {
@@ -239,6 +238,7 @@ class YamlDefinitionLoader implements DefinitionProviderInterface
         }
 
         if (isset($service['public'])) {
+            // TODO: add support for private services => mapping to nested definitions
             throw new InvalidArgumentException('The "public" key in instance definitions is not supported by YamlDefinitionLoader. This is a Symfony specific feature.');
         }
 

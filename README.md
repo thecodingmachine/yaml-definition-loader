@@ -24,6 +24,20 @@ You can install this package through Composer:
 The packages adheres to the [SemVer](http://semver.org/) specification, and there will be full backward compatibility
 between minor versions.
 
+## Automatic discovery
+
+If you want YAML files of your package to be automatically discoverable (using Puli), you should bind your YAML files
+to the "thecodingmachine/yaml_definitions" binding type.
+
+In your package, simply type: 
+
+```bash
+# binds all YML files in the directory my/services/*.yml
+puli bind my/services/*.yml thecodingmachine/yaml_definitions
+```
+
+Binded YML files can be discovered automatically if consumers use Puli for Discovery.
+
 ## Usage
 
 This package contains a `YamlDefinitionLoader` class. The goal of this class is to take a YAML file and generate
