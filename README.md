@@ -27,13 +27,13 @@ between minor versions.
 ## Automatic discovery
 
 If you want YAML files of your package to be automatically discoverable (using Puli), you should bind your YAML files
-to the "thecodingmachine/yaml_definitions" binding type.
+to the "definition-interop/yaml-definition-files" binding type.
 
 In your package, simply type: 
 
 ```bash
 # binds all YML files in the directory my/services/*.yml
-puli bind my/services/*.yml thecodingmachine/yaml_definitions
+puli bind my/services/*.yml definition-interop/yaml-definition-files
 ```
 
 Binded YML files can be discovered automatically if consumers use Puli for Discovery.
